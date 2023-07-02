@@ -19,6 +19,13 @@ type ListingTableRow = {
   postal_code: string;
   city: string;
   country: string;
+  price_history?:boolean;
+
+};
+
+type PriceHistory = {
+  price_eur: number;
+  created_date: string;
 };
 
 function tableRowToListing(row: ListingTableRow): Listing {
@@ -40,6 +47,8 @@ function tableRowToListing(row: ListingTableRow): Listing {
     },
     created_date: row.created_date.toISOString(),
     updated_date: row.updated_date.toISOString(),
+    price_history:row.price_history
+
   };
 }
 
@@ -62,14 +71,22 @@ function listingToTableRow(
     country: listing.postal_address.country,
     created_date: createdDate,
     updated_date: new Date(),
+
   };
 }
 
 export function getRepository(postgres: PostgresClient) {
   return {
     async getAllListings(): Promise<Listing[]> {
-      const queryString = `SELECT * FROM listing`;
-      const result = await postgres.query(queryString);
+      const queryString = `
+      SELECT
+        listing.*,
+        CASE WHEN price_history.listing_id IS NULL THEN false ELSE true END AS price_history
+      FROM listing
+      LEFT JOIN price_history ON price_history.listing_id = listing.id
+      ORDER BY listing.id DESC;
+    `;
+          const result = await postgres.query(queryString);
 
       return result.rows.map(tableRowToListing);
     },
@@ -82,9 +99,7 @@ export function getRepository(postgres: PostgresClient) {
       const listing = result.rows[0];
 
       if (!listing) {
-        throw new EntityNotFound(
-          `Could not find listing with id: ${listingId}`
-        );
+        throw new EntityNotFound(`Could not find listing with id: ${listingId}`);
       }
 
       return tableRowToListing(listing);
@@ -106,7 +121,9 @@ export function getRepository(postgres: PostgresClient) {
       `;
       const result = await postgres.query(queryString, queryValues);
 
-      return tableRowToListing(result.rows[0]);
+      const insertedListing = tableRowToListing(result.rows[0]);
+
+      return insertedListing;
     },
 
     async updateListing(listingId: number, listing: ListingWrite) {
@@ -124,7 +141,40 @@ export function getRepository(postgres: PostgresClient) {
       const queryValues = [...values, listingId];
       const result = await postgres.query(queryString, queryValues);
 
-      return tableRowToListing(result.rows[0]);
+      const updatedListing = tableRowToListing(result.rows[0]);
+
+      // Store price history if the price has changed
+      if (updatedListing.latest_price_eur !== originalListing.latest_price_eur) {
+        await this.insertPriceHistory(updatedListing.id, updatedListing.latest_price_eur, updatedListing.updated_date);
+      }
+
+      return updatedListing;
+    },
+
+    async insertPriceHistory(listingId: number, price: number, date: string) {
+      const queryString = `
+        INSERT INTO price_history (listing_id, price_eur, created_date)
+        VALUES ($1, $2, $3)
+      `;
+      const queryValues = [listingId, price, date];
+
+      await postgres.query(queryString, queryValues);
+      console.log(`Storing price history for listing ${listingId}: Price: ${price}, Date: ${date}`);
+    },
+
+    async getPriceHistory(listingId: number)   {
+      
+      const queryString = `
+      SELECT price_eur, created_date
+      FROM price_history
+      WHERE listing_id = $1
+      ORDER BY created_date ASC
+    `;
+  
+    const queryValues = [listingId];
+  
+    const result = await postgres.query(queryString, queryValues);
+    return result.rows;
     },
   };
 }
