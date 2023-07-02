@@ -69,6 +69,7 @@ services:
       - type: volume
         source: pg-data
         target: /var/lib/postgresql/data
+         COPY ./db/initial_schema.sql /docker-entrypoint-initdb.d/
       - ./db:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"

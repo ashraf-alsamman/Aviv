@@ -14,12 +14,17 @@
     "test": "jest"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "1.9.5",
     "axios": "^1.2.2",
+    "moment": "2.29.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-redux": "8.1.1",
     "react-router-dom": "6.6.1",
+    "redux": "4.2.1",
     "sanitize.css": "13.0.0",
-    "sass": "1.55.0"
+    "sass": "1.55.0",
+    "save": "2.9.0"
   },
   "devDependencies": {
     "@babel/core": "7.19.3",

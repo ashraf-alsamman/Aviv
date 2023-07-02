@@ -137,6 +137,10 @@ components:
           description: 'The date at which the listing was last updated, following RFC 3339.'
           type: string
           example: '1970-01-01T00:00:00.000Z'
+        price_history:
+          name: Price History
+          description: Find out whether this listing has a previous price history or not.
+          type: boolean
     ListingWrite:
       type: object
       required:
