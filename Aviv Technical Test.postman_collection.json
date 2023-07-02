@@ -1,0 +1,126 @@
+{
+	"info": {
+		"_postman_id": "ddf99d89-21ae-4e33-a627-7ef779e18f68",
+		"name": "Aviv Technical Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "733051",
+		"_collection_link": "https://www.postman.com/ashraf-alsamman/workspace/ashraf-alsamman/collection/733051-ddf99d89-21ae-4e33-a627-7ef779e18f68?action=share&creator=733051&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Update a listing",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"name\":\"Mikhail Schmiedt\",\n   \"postal_address\":{\n      \"street_address\":\"Johan-Ernst-Ring 7\",\n      \"postal_code\":\"21810\",\n      \"city\":\"Berchtesgaden\",\n      \"country\":\"DE\"\n   },\n   \"description\":\"Lorem Ipsum Dolor ...\",\n   \"building_type\":\"STUDIO\",\n   \"latest_price_eur\":720000,\n   \"surface_area_m2\":167,\n   \"rooms_count\":6,\n   \"bedrooms_count\":2,\n   \"contact_phone_number\":\"+219779210354\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{applicationURI}}/listings/10",
+					"host": [
+						"{{applicationURI}}"
+					],
+					"path": [
+						"listings",
+						"10"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a listing",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"name\":\"test\",\n   \"postal_address\":{\n      \"street_address\":\"Johan-Ernst-Ring 7\",\n      \"postal_code\":\"21810\",\n      \"city\":\"Berchtesgaden\",\n      \"country\":\"DE\"\n   },\n   \"description\":\"Lorem Ipsum Dolor ...\",\n   \"building_type\":\"STUDIO\",\n   \"latest_price_eur\":720000,\n   \"surface_area_m2\":167,\n   \"rooms_count\":6,\n   \"bedrooms_count\":2,\n   \"contact_phone_number\":\"+219779210354\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{applicationURI}}/listings",
+					"host": [
+						"{{applicationURI}}"
+					],
+					"path": [
+						"listings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all listings",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{applicationURI}}/listings",
+					"host": [
+						"{{applicationURI}}"
+					],
+					"path": [
+						"listings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get listing prices",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{applicationURI}}/listings/10/prices",
+					"host": [
+						"{{applicationURI}}"
+					],
+					"path": [
+						"listings",
+						"10",
+						"prices"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "applicationURI",
+			"value": "http://localhost:8383"
+		}
+	]
+}
